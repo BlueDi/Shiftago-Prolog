@@ -51,3 +51,34 @@ display_board_line_nopieces([_ | Other_pieces]) :-
 	write('|'), 
 	write('   '), 
 	display_board_line_nopieces(Other_pieces).
+
+% Colocar peca
+place_piece(Board, Player, left, Y, NewBoard):-
+	miniboard(Board),
+	search_Y(Board, Player, Y, NewBoard),
+	display_board(NewBoard).
+place_piece(Board, Player, right, Y, NewBoard):-
+	miniboard(Board),
+	search_Y(Board, Player, Y, NewBoard),
+	display_board(NewBoard).
+	
+search_Y([[]|[]], _, _, _).
+search_Y([Head|Tail], Player, Y, [Head|NewTail]):-
+	Y > 1,
+	Y1 is Y - 1,
+	search_Y(Tail, Player, Y1, NewTail).
+search_Y([Linha|Cauda], Player, 1, NewBoard):-
+	delete_free_space(Linha, LinhaIntermedia), % Verificar se tem uma posicao livre na linha
+	append([Player], LinhaIntermedia, NovaLinha), % Construir a nova linha
+	substituir_linha(NovaLinha, [Linha|Cauda], NewBoard).
+	
+substituir_linha(Linha, [AEliminar|Tail], Resultado):-
+	append(La, [AEliminar|Lb], [AEliminar|Tail]),
+	append(La, Lb, BoardIntermedio),
+	append([Linha], BoardIntermedio, Resultado),
+	length(AEliminar, SizeCheck),
+	length(AEliminar, SizeCheck).
+
+delete_free_space(ListaOriginal, ListaFinal):-
+	append(La, [e|Lb], ListaOriginal),
+	append(La, Lb, ListaFinal).
