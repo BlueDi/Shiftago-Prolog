@@ -51,23 +51,36 @@ display_board_line_nopieces([_ | Other_pieces]) :-
 	write('|'), 
 	write('   '), 
 	display_board_line_nopieces(Other_pieces).
+% Checkers
+checkBoard(Board, NewBoard):-
+	length(Board, BoardCheck),
+	length(NewBoard, BoardCheck).
+	
+checkValidY(Board, Y):-
+	length(Board, BoardCheck),
+	Y =< BoardCheck.
+	
 
 % Colocar peca
 place_piece(Board, Player, left, Y, NewBoard):-
-	miniboard(Board),
-	search_Y(Board, Player, Y, NewBoard),
-	display_board(NewBoard).
+	(checkValidY(Board, Y),
+	place_Y(Board, Player, Y, NewBoard),
+	checkBoard(Board, NewBoard));
+	NewBoard = Board.
 place_piece(Board, Player, right, Y, NewBoard):-
-	miniboard(Board),
-	search_Y(Board, Player, Y, NewBoard),
-	display_board(NewBoard).
+	(checkValidY(Board, Y),
+	inverterBoard(Board, InvBoard),
+	place_Y(InvBoard, Player, Y, ReInvBoard),
+	inverterBoard(ReInvBoard, NewBoard),
+	checkBoard(Board, NewBoard));
+	NewBoard = Board.
 	
-search_Y([[]|[]], _, _, _).
-search_Y([Head|Tail], Player, Y, [Head|NewTail]):-
+place_Y([[]|[]], _, _, _).
+place_Y([Head|Tail], Player, Y, [Head|NewTail]):-
 	Y > 1,
 	Y1 is Y - 1,
-	search_Y(Tail, Player, Y1, NewTail).
-search_Y([Linha|Cauda], Player, 1, NewBoard):-
+	place_Y(Tail, Player, Y1, NewTail).
+place_Y([Linha|Cauda], Player, 1, NewBoard):-
 	delete_free_space(Linha, LinhaIntermedia), % Verificar se tem uma posicao livre na linha
 	append([Player], LinhaIntermedia, NovaLinha), % Construir a nova linha
 	substituir_linha(NovaLinha, [Linha|Cauda], NewBoard).
@@ -82,3 +95,14 @@ substituir_linha(Linha, [AEliminar|Tail], Resultado):-
 delete_free_space(ListaOriginal, ListaFinal):-
 	append(La, [e|Lb], ListaOriginal),
 	append(La, Lb, ListaFinal).
+
+inverterBoard([], _).
+inverterBoard([Linha|Resto], [InvLinha|InvResto]):- % Inverte o tabuleiro na Horizontal
+	inverterLista(Linha, InvLinha),
+	inverterBoard(Resto, InvResto).
+	
+inverterLista(Lista, InvLista):-
+	rev(Lista, [], InvLista).
+rev([H|T], S, R):-
+	rev(T, [H|S], R).
+rev([], R, R).
