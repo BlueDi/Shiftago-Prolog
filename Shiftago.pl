@@ -11,7 +11,7 @@ board([
 
 miniboard([
 	[p1, p2, p1],
-	[e, e, e],
+	[p2, e, e],
 	[e, e, e]
 ]).
 	
@@ -21,13 +21,10 @@ translate(p1, '1').
 translate(p2, '2').
 
 /* Display */
-% To run: display_board(board).
-display_board(board) :-
-	board(Board),
-	display_board(Board).
-display_board([Line | []]) :-
-	display_board_line_pieces(Line).
-display_board([Line | Other_lines]) :-
+display_board([Line | []]):-
+	display_board_line_pieces(Line),
+	write('\n').
+display_board([Line | Other_lines]):-
 	display_board_line_pieces(Line), 
 	nl, 
 	display_board_line_nopieces(Line), 
@@ -35,22 +32,23 @@ display_board([Line | Other_lines]) :-
 	display_board(Other_lines).
 
 % Display linhas com pecas
-display_board_line_pieces([Piece | []]) :-
+display_board_line_pieces([Piece | []]):-
 	translate(Piece, Symbol),
 	write(Symbol).
-display_board_line_pieces([Piece | Other_pieces]) :-
+display_board_line_pieces([Piece | Other_pieces]):-
 	translate(Piece, Symbol),
 	write(Symbol),
 	write(' - '), 
 	display_board_line_pieces(Other_pieces).
 	
 % Display linhas sem pecas
-display_board_line_nopieces([_ | []]) :-
+display_board_line_nopieces([_ | []]):-
 	write('|').
-display_board_line_nopieces([_ | Other_pieces]) :-
+display_board_line_nopieces([_ | Other_pieces]):-
 	write('|'), 
 	write('   '), 
 	display_board_line_nopieces(Other_pieces).
+	
 % Checkers
 checkBoard(Board, NewBoard):-
 	length(Board, BoardCheck),
@@ -60,6 +58,21 @@ checkValidY(Board, Y):-
 	length(Board, BoardCheck),
 	Y =< BoardCheck.
 	
+% Main
+play(normal):-
+	board(Board),
+	place_piece(Board, p1, left, 2, Board2),
+	place_piece(Board2, p2, right, 2, Board3),
+	place_piece(Board3, p1, right, 6, Board4),
+	place_piece(Board4, p2, right, 2, NewBoard),
+	display_board(NewBoard).
+play(mini):-
+	miniboard(Board),
+	place_piece(Board, p1, left, 2, Board2),
+	place_piece(Board2, p2, right, 2, Board3),
+	place_piece(Board3, p1, right, 6, Board4),
+	place_piece(Board4, p2, right, 2, NewBoard),
+	display_board(NewBoard).
 
 % Colocar peca
 place_piece(Board, Player, left, Y, NewBoard):-
