@@ -6,11 +6,11 @@ board([
 	[e, e, x, e, e, e, e],
 	[e, e, x, x, x, x, e],
 	[e, e, e, e, e, x, e],
-	[e, e, e, e, e, x, e]
+	[p1, p1, p1, p1, p1, p1, p1]
 ]).
 
 miniboard([
-	[p1, p2, p1],
+	[p2, p2, p2],
 	[p2, e, e],
 	[e, e, e]
 ]).

@@ -1,5 +1,6 @@
 :- include('objects.pl').
 :- include('board.pl').
+:- include('game.pl').
 
 shiftago(Empty):-
 	write('Please pick a board to play: normal, or mini\n'),
