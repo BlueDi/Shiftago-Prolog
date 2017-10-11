@@ -1,7 +1,7 @@
 /* Display */
 display_board([Line | []]):-
 	display_board_line_pieces(Line),
-	write('\n').
+	nl.
 display_board([Line | Other_lines]):-
 	display_board_line_pieces(Line), 
 	nl, 

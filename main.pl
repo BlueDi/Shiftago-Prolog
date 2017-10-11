@@ -2,13 +2,13 @@
 :- include('board.pl').
 :- include('game.pl').
 
-shiftago(Empty):-
+shiftago(Winner):-
 	write('Please pick a board to play: normal, or mini\n'),
 	read(BoardName),
 	((BoardName = 'normal', board(Board)); (BoardName = 'mini', miniboard(Board))),
-	play(Board).
+	play(Board, Winner).
 
-play(Board):-
+play(Board, Winner):-
 	place_piece(Board, p1, left, 2, Board2),
 	place_piece(Board2, p2, right, 2, Board3),
 	place_piece(Board3, p1, right, 6, Board4),
@@ -22,4 +22,5 @@ play(Board):-
 	place_piece(Board11, p2, left, 5, Board12),
 	place_piece(Board12, p2, bottom, 5, Board13),
 	place_piece(Board13, p1, bottom, 5, Board14),
-	display_board(Board14).
+	display_board(Board14),
+	winner(Board14, Winner).
