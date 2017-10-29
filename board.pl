@@ -32,6 +32,11 @@ checkBoard(Board, NewBoard):-
 	length(Board, BoardCheck),
 	length(NewBoard, BoardCheck).
 
+check_no_moves([]).
+check_no_moves([Line|Other_lines]):-
+	nonmember('e', Line),
+	check_no_moves(Other_lines).
+
 checkValidY(Board, Y):-
 	length(Board, BoardCheck),
 	Y =< BoardCheck.

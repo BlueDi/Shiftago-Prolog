@@ -23,21 +23,24 @@ play(Board, GameMode, Winner, Player):-
 	nl, write('Player '), write(Player), write(' turn'), nl,
 	length(Board, BoardSize),
 	get_move(GameMode, BoardSize, Cardinal, Position),
+	write(Player), write(' placing at '), write(Cardinal), write(', '), write(Position), nl,
 	place_piece(Board, Player, Cardinal, Position, NewBoard),
 	
 	/* check end condition */
-	winner(NewBoard, Winner),
-	nl, write('Winner = '), write(Winner), nl, nl,
+	winner(NewBoard, TempWinner),
+	nl, write('Winner = '), write(TempWinner), nl, nl,
 	(
-		 Winner \= 'none' ->
+		 (TempWinner \= 'none'; check_no_moves(NewBoard)) ->
 			(
-				write('GAME OVER'), nl, nl
+				Winner = TempWinner,
+				write('------- GAME OVER -------'), nl, nl,
+				display_board(NewBoard),
+				nl, write('------- GAME OVER -------')
 			);
-			switch_player(Player, NewPlayer),
-			play(NewBoard, GameMode, Winner, NewPlayer)
+			(switch_player(Player, NewPlayer), play(NewBoard, GameMode, Winner, NewPlayer))
 	).
 
-get_move(hh, BoardSize, Cardinal, Position):-
+get_move(hh, _, Cardinal, Position):-
 	write('Please pick a side [top, left, right, bottom]'), nl,
 	read(Cardinal), % TODO: Check if Cardinal is valid
 	write('Please pick a position [1, Board_Size]'), nl,
