@@ -14,6 +14,8 @@ miniboard([
 	[e, e, e],
 	[e, e, e]
 ]).
+
+cardinal_moves([top, left, right, bottom]).
 	
 /* Symbols */
 translate(e, 'O').
