@@ -3,6 +3,7 @@
 winner([Line|OtherLines], Winner):-
 	(winner_lines([Line|OtherLines], Winner), Winner \= e);
 	(winner_column([Line|OtherLines], Winner), Winner \= e);
+	(winner_diagonal([Line|OtherLines], Winner), Winner \= e);
 	Winner = 'none'.
 
 winner_lines([], _).
@@ -30,3 +31,16 @@ winner_column(_, [], _).
 winner_column(N, [Line|OtherLines], Winner):-
 	nth1(N, Line, Winner),
 	winner_column(N, OtherLines, Winner).
+
+winner_diagonal([Line|OtherLines], Winner):-
+	nth1(N, Line, Winner),
+	Winner \= e,
+	Nplus is N + 1,
+	Nminus is N - 1,
+	(winner_diagonal(Nplus, OtherLines, Winner); winner_diagonal(Nminus, OtherLines, Winner)).
+winner_diagonal(_, [], _).
+winner_diagonal(N, [Line|OtherLines], Winner):-
+	nth1(N, Line, Winner),
+	Nplus is N + 1,
+	Nminus is N - 1,
+	(winner_diagonal(Nplus, OtherLines, Winner); winner_diagonal(Nminus, OtherLines, Winner)).
