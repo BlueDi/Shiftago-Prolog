@@ -37,10 +37,16 @@ winner_diagonal([Line|OtherLines], Winner):-
 	Winner \= e,
 	Nplus is N + 1,
 	Nminus is N - 1,
-	(winner_diagonal(Nplus, OtherLines, Winner); winner_diagonal(Nminus, OtherLines, Winner)).
-winner_diagonal(_, [], _).
-winner_diagonal(N, [Line|OtherLines], Winner):-
+	(winner_diagonal_plus(Nplus, OtherLines, Winner); winner_diagonal_minus(Nminus, OtherLines, Winner)).
+
+winner_diagonal_plus(_, [], _).
+winner_diagonal_plus(N, [Line|OtherLines], Winner):-
 	nth1(N, Line, Winner),
 	Nplus is N + 1,
+	winner_diagonal_plus(Nplus, OtherLines, Winner).
+
+winner_diagonal_minus(_, [], _).
+winner_diagonal_minus(N, [Line|OtherLines], Winner):-
+	nth1(N, Line, Winner),
 	Nminus is N - 1,
-	(winner_diagonal(Nplus, OtherLines, Winner); winner_diagonal(Nminus, OtherLines, Winner)).
+	winner_diagonal_minus(Nminus, OtherLines, Winner).
