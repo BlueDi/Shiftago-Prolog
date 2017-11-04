@@ -130,3 +130,30 @@ replace_nth(Nth, [Head|Tail], NovaPeca, [Head|NewTail], VelhaPeca):-
 	Nth > 1,
 	N1 is Nth - 1,
 	replace_nth(N1, Tail, NovaPeca, NewTail, VelhaPeca).
+
+value(Player, Board, Value):-
+	count_elems_inlines(Player, Board, Value).
+
+count_elems_inlines(_, [], 0).
+count_elems_inlines(Player, [Line|Other_lines], Value):-
+	count_elems_inline(Player, Line, LineValue),
+	count_elems_inlines(Player, Other_lines, Value2),
+	Value is Value2 + LineValue.
+	
+count_elems_inline(_, [], 0).
+count_elems_inline(X, [Y], 0):-
+	X \= Y.
+count_elems_inline(X, [X], 0).
+count_elems_inline(X, [X|[Y|Lista]], N):-
+	X \= Y,
+	count_elems_inline(X, Lista, N).
+count_elems_inline(X, [Y|[Z|Lista]], N):-
+	X \= Y,
+	X \= Z,
+	count_elems_inline(X, Lista, N).
+count_elems_inline(X, [Y|[X|Lista]], N):-
+	X \= Y,
+	count_elems_inline(X, [X|Lista], N).
+count_elems_inline(X, [X|[X|Lista]], N):-
+	count_elems_inline(X, [X|Lista], N1),
+	N is N1 + 1.
