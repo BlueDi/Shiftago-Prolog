@@ -131,6 +131,29 @@ replace_nth(Nth, [Head|Tail], NovaPeca, [Head|NewTail], VelhaPeca):-
 	N1 is Nth - 1,
 	replace_nth(N1, Tail, NovaPeca, NewTail, VelhaPeca).
 
+/* Get all moves */
+get_moves(Board, Player, AllMoves):-
+	length(Board, BoardSize),
+	valid_move(Board, Player, bottom, BoardSize, AllMovesBottom),
+	valid_move(Board, Player, left, BoardSize, AllMovesLeft),
+	valid_move(Board, Player, right, BoardSize, AllMovesRight),
+	valid_move(Board, Player, top, BoardSize, AllMovesTop),
+	append(AllMovesBottom, AllMovesLeft, AllMovesBottomLeft),
+	append(AllMovesBottomLeft, AllMovesRight, AllMovesBottomLeftRight),
+	append(AllMovesBottomLeftRight, AllMovesTop, AllMoves).
+	
+valid_move(_, _, _, 0, _).
+valid_move(Board, Player, Cardinal, Value, [Cardinal-Value|Other_Moves]):-
+	place_piece(Board, Player, Cardinal, Value, NewBoard),
+	Board \= NewBoard,
+	Value2 is Value - 1,
+	valid_move(Board, Player, Cardinal, Value2, Other_Moves).
+valid_move(Board, Player, Cardinal, Value, AllMoves):-
+	place_piece(Board, Player, Cardinal, Value, Board),
+	Value2 is Value - 1,
+	valid_move(Board, Player, Cardinal, Value2, AllMoves).
+	
+	
 /* Board Value */
 value(Player, Board, Value):-
 	count_elems_inlines(Player, Board, Value2),
