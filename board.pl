@@ -131,8 +131,11 @@ replace_nth(Nth, [Head|Tail], NovaPeca, [Head|NewTail], VelhaPeca):-
 	N1 is Nth - 1,
 	replace_nth(N1, Tail, NovaPeca, NewTail, VelhaPeca).
 
+/* Board Value */
 value(Player, Board, Value):-
-	count_elems_inlines(Player, Board, Value).
+	count_elems_inlines(Player, Board, Value2),
+	count_elems_incolumns(Player, Board, Value3),
+	Value is Value2 + Value3.
 
 count_elems_inlines(_, [], 0).
 count_elems_inlines(Player, [Line|Other_lines], Value):-
@@ -157,3 +160,18 @@ count_elems_inline(X, [Y|[X|Lista]], N):-
 count_elems_inline(X, [X|[X|Lista]], N):-
 	count_elems_inline(X, [X|Lista], N1),
 	N is N1 + 1.
+	
+count_elems_incolumns(Player, [Head1|[Head2|[]]], Value):-
+	count_elems_incolumn(Player, Head1, Head2, Value).
+count_elems_incolumns(Player, [Head1|[Head2|Other_Lines]], Value):-
+	count_elems_incolumn(Player, Head1, Head2, Value2),
+	count_elems_incolumns(Player, [Head2|Other_Lines], Value3),
+	Value is Value2 + Value3.
+	
+count_elems_incolumn(_, [], [], 0).
+count_elems_incolumn(Player, [Player|Tail1], [Player|Tail2], Value):-
+	count_elems_incolumn(Player, Tail1, Tail2, Value2),
+	Value is Value2 + 1.
+count_elems_incolumn(Player, [Head1|Tail1], [Head2|Tail2], Value):-
+	(Player \= Head1; Player \= Head2),
+	count_elems_incolumn(Player, Tail1, Tail2, Value).
