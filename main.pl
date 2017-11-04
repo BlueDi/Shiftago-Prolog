@@ -26,7 +26,7 @@ play(Board, GameMode, Difficulty, Winner, Player):-
 	nl, write('Player '), write(Player), format("'s turn", []), nl,
 	length(Board, BoardSize),
 	
-	process_turn(GameMode, Difficulty, BoardSize, Cardinal, Position, Player),
+	process_turn(GameMode, Difficulty, Board, BoardSize, Cardinal, Position, Player),
 	
 	write(Player), write(' placing at '), write(Cardinal), write(', '), write(Position), nl,
 	place_piece(Board, Player, Cardinal, Position, NewBoard),
@@ -45,45 +45,59 @@ play(Board, GameMode, Difficulty, Winner, Player):-
 			(switch_player(Player, NewPlayer), play(NewBoard, GameMode, Difficulty, Winner, NewPlayer))
 	).
 
-process_turn(cc, Difficulty, BoardSize, Cardinal, Position, _):-
-	get_move(Difficulty, BoardSize, Cardinal, Position).
+process_turn(cc, Difficulty, Board, BoardSize, Cardinal, Position, Player):-
+	get_move(Difficulty, Board, BoardSize, Cardinal, Position, Player).
 % Assume-se que o Player2 num jogo Human vs CPU é sempre o CPU
-process_turn(hc, Difficulty, BoardSize, Cardinal, Position, Player):-
+process_turn(hc, Difficulty, Board, BoardSize, Cardinal, Position, Player):-
 	(Player == 'p1' ->
-		get_move(BoardSize, Cardinal, Position);
-		get_move(Difficulty, BoardSize, Cardinal, Position)
+		get_move(Board, BoardSize, Cardinal, Position, Player);
+		get_move(Difficulty, Board, BoardSize, Cardinal, Position, Player)
 	).
-process_turn(hh, _, BoardSize, Cardinal, Position, _):-
-	get_move(BoardSize, Cardinal, Position).
+process_turn(hh, _, Board, BoardSize, Cardinal, Position, Player):-
+	get_move(Board, BoardSize, Cardinal, Position, Player).
 	
 /* Human Turn */
-get_move(BoardSize, Cardinal, Position):-
-	repeat,
-	write('Please pick a side [top, left, right, bottom]'), nl,
-	read(Cardinal), 
+get_move(Board, BoardSize, Cardinal, Position, Player):-
 	cardinal_moves(AllCardinals),
-	(member(Cardinal, AllCardinals) ->
-			!;
-			write('\nInput '), write(Cardinal), write(' is not valid.\n'),
+	get_moves(Board, Player, AllMoves),
+	show_all_moves(AllMoves),
+	repeat,
+		write('Please pick a side [top, left, right, bottom]'), nl,
+		read(Cardinal), 
+		write('Please pick a position [1, '), write(BoardSize), write(']'), nl,
+		read(Position),
+		(	valid_input(BoardSize, AllMoves, AllCardinals, Cardinal, Position)
+		->	!
+		;	nl, write('Input ['), write(Cardinal-Position), write('] is not valid.'), nl,
 			fail
-	),
-	
-	write('Please pick a position [1, '), write(BoardSize), write(']\n'),
-	read(Position). % TODO: Check if Position is valid
-	
+		).
+
+valid_input(BoardSize, AllMoves, AllCardinals, Cardinal, Position):-
+	member(Cardinal, AllCardinals), 
+	integer(Position), 
+	Position =< BoardSize, 
+	Position > 0, 
+	member(Cardinal-Position, AllMoves).
+			
 /* CPU Easy Turn */
-get_move(easy, BoardSize, Cardinal, Position):-
+get_move(easy, Board, BoardSize, Cardinal, Position, Player):-
 	cardinal_moves(AllCardinals),
 	random_member(Cardinal, AllCardinals),
 	BoardSize1 is BoardSize + 1,
-	random(1, BoardSize1, Position).
+	random(1, BoardSize1, Position),
+	get_moves(Board, Player, AllMoves),
+	member(Cardinal-Position, AllMoves).
 
 /* CPU Hard Turn */
-get_move(hard, BoardSize, Cardinal, Position):-
-	/* 
-	TODO: Listar todas as jogas possíveis;
-	TODO: Executar a jogada & calcular o value do tabuleiro pos jogada;
-	TODO: Escolher o tabuleiro com a melhor jogada;
-	*/
-	Cardinal is 1,
-	Position is 1.
+get_move(hard, Board, BoardSize, Cardinal, Position, Player):-
+	get_moves(Board, Player, AllMoves),
+	member(Cardinal-Position, AllMoves).
+	
+show_all_moves(ValidMoves):-
+	write('Valid Moves:'), nl,
+	show_all_move(ValidMoves),
+	nl.
+show_all_move([]).
+show_all_move([Move|Other_Moves]) :-
+	write('    '), write(Move), nl,
+	show_all_move(Other_Moves).
