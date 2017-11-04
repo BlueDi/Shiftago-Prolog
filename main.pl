@@ -18,7 +18,7 @@ shiftago(Winner):-
 play(Board, GameMode, Winner, Player):-
 	display_board(Board),	
 	
-	nl, write('Player '), write(Player), write("'s turn"), nl,
+	nl, write('Player '), write(Player), format("'s turn", []), nl,
 	length(Board, BoardSize),
 	
 	process_turn(GameMode, BoardSize, Cardinal, Position, Player),
