@@ -153,48 +153,59 @@ valid_move(Board, Player, Cardinal, Value, AllMoves):-
 	Value2 is Value - 1,
 	valid_move(Board, Player, Cardinal, Value2, AllMoves).
 	
-	
 /* Board Value */
 value(Player, Board, Value):-
 	count_elems_inlines(Player, Board, Value2),
 	count_elems_incolumns(Player, Board, Value3),
 	Value is Value2 + Value3.
 
-count_elems_inlines(_, [], 0).
-count_elems_inlines(Player, [Line|Other_lines], Value):-
-	count_elems_inline(Player, Line, LineValue),
-	count_elems_inlines(Player, Other_lines, Value2),
+/**
+	Counts the number of pairs by lines.
+*/
+count_pairs_inlines(_, [], 0).
+count_pairs_inlines(Player, [Line|Other_lines], Value):-
+	count_pairs_inline(Player, Line, LineValue),
+	count_pairs_inlines(Player, Other_lines, Value2),
 	Value is Value2 + LineValue.
 	
-count_elems_inline(_, [], 0).
-count_elems_inline(X, [Y], 0):-
+/**
+	Counts the number of pairs in a line.
+*/
+count_pairs_inline(_, [], 0).
+count_pairs_inline(X, [Y], 0):-
 	X \= Y.
-count_elems_inline(X, [X], 0).
-count_elems_inline(X, [X|[Y|Lista]], N):-
+count_pairs_inline(X, [X], 0).
+count_pairs_inline(X, [X|[Y|Lista]], N):-
 	X \= Y,
-	count_elems_inline(X, Lista, N).
-count_elems_inline(X, [Y|[Z|Lista]], N):-
+	count_pairs_inline(X, Lista, N).
+count_pairs_inline(X, [Y|[Z|Lista]], N):-
 	X \= Y,
 	X \= Z,
-	count_elems_inline(X, Lista, N).
-count_elems_inline(X, [Y|[X|Lista]], N):-
+	count_pairs_inline(X, Lista, N).
+count_pairs_inline(X, [Y|[X|Lista]], N):-
 	X \= Y,
-	count_elems_inline(X, [X|Lista], N).
-count_elems_inline(X, [X|[X|Lista]], N):-
-	count_elems_inline(X, [X|Lista], N1),
+	count_pairs_inline(X, [X|Lista], N).
+count_pairs_inline(X, [X|[X|Lista]], N):-
+	count_pairs_inline(X, [X|Lista], N1),
 	N is N1 + 1.
 	
-count_elems_incolumns(Player, [Head1|[Head2|[]]], Value):-
-	count_elems_incolumn(Player, Head1, Head2, Value).
-count_elems_incolumns(Player, [Head1|[Head2|Other_Lines]], Value):-
-	count_elems_incolumn(Player, Head1, Head2, Value2),
-	count_elems_incolumns(Player, [Head2|Other_Lines], Value3),
+/**
+	Counts the number of pairs by columns.
+*/
+count_pairs_incolumns(Player, [Head1|[Head2|[]]], Value):-
+	count_pairs_incolumn(Player, Head1, Head2, Value).
+count_pairs_incolumns(Player, [Head1|[Head2|Other_Lines]], Value):-
+	count_pairs_incolumn(Player, Head1, Head2, Value2),
+	count_pairs_incolumns(Player, [Head2|Other_Lines], Value3),
 	Value is Value2 + Value3.
-	
-count_elems_incolumn(_, [], [], 0).
-count_elems_incolumn(Player, [Player|Tail1], [Player|Tail2], Value):-
-	count_elems_incolumn(Player, Tail1, Tail2, Value2),
+
+/**
+	Counts the number of pairs in two columns.
+*/
+count_pairs_incolumn(_, [], [], 0).
+count_pairs_incolumn(Player, [Player|Tail1], [Player|Tail2], Value):-
+	count_pairs_incolumn(Player, Tail1, Tail2, Value2),
 	Value is Value2 + 1.
-count_elems_incolumn(Player, [Head1|Tail1], [Head2|Tail2], Value):-
+count_pairs_incolumn(Player, [Head1|Tail1], [Head2|Tail2], Value):-
 	(Player \= Head1; Player \= Head2),
-	count_elems_incolumn(Player, Tail1, Tail2, Value).
+	count_pairs_incolumn(Player, Tail1, Tail2, Value).
