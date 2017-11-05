@@ -90,8 +90,7 @@ get_move(easy, Board, BoardSize, Cardinal, Position, Player):-
 
 /* CPU Hard Turn */
 get_move(hard, Board, BoardSize, Cardinal, Position, Player):-
-	get_moves(Board, Player, AllMoves),
-	member(Cardinal-Position, AllMoves).
+	highest_value_move(Player, Board, Cardinal, Position).
 	
 show_all_moves(ValidMoves):-
 	write('Valid Moves:'), nl,

@@ -1,3 +1,5 @@
+?- use_module(library(lists)).
+
 /* Display */
 display_board([Line | []]):-
 	display_board_line_pieces(Line),
@@ -158,6 +160,19 @@ value(Player, Board, Value):-
 	count_pairs_inlines(Player, Board, Value2),
 	count_pairs_incolumns(Player, Board, Value3),
 	Value is Value2 + Value3.
+
+highest_value_move(Player, Board, Cardinal, Position):-
+	get_moves(Board, Player, AllMoves),
+	list_value_move(Board, Player, AllMoves, ValueMove),
+	sort(ValueMove, SortedValueMove),
+	last(SortedValueMove, Value-Cardinal-Position),
+	write('Valor do tabuleiro '), write(Value), nl.
+	
+list_value_move(_, _, [], []).
+list_value_move(Board, Player, [Cardinal-Position|AllMoves], [Value-Cardinal-Position|ValueMove]):-
+	place_piece(Board, Player, Cardinal, Position, NewBoard),
+	value(Player, NewBoard, Value),
+	list_value_move(Board, Player, AllMoves, ValueMove).
 
 /**
 	Counts the number of pairs by lines.
