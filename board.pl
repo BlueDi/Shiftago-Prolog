@@ -155,8 +155,8 @@ valid_move(Board, Player, Cardinal, Value, AllMoves):-
 	
 /* Board Value */
 value(Player, Board, Value):-
-	count_elems_inlines(Player, Board, Value2),
-	count_elems_incolumns(Player, Board, Value3),
+	count_pairs_inlines(Player, Board, Value2),
+	count_pairs_incolumns(Player, Board, Value3),
 	Value is Value2 + Value3.
 
 /**
