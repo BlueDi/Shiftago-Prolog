@@ -3,7 +3,9 @@
 :- include('objects.pl').
 :- include('board.pl').
 :- include('game.pl').
+:- include('value.pl').
 
+% Initializes parameters of the game and starts it
 shiftago(Winner):-
 	write('Please pick a board to play [normal, mini]'), nl,
 	read(BoardName),
@@ -20,6 +22,7 @@ shiftago(Winner):-
 	
 	play(Board, GameMode, Difficulty, Winner, p1).
 
+% Start the game
 play(Board, GameMode, Difficulty, Winner, Player):-
 	display_board(Board),	
 	
@@ -34,20 +37,19 @@ play(Board, GameMode, Difficulty, Winner, Player):-
 	/* check end condition */
 	winner(NewBoard, TempWinner),
 	nl, write('Winner = '), write(TempWinner), nl, nl,
-	(
-		 (TempWinner \= 'none'; check_no_moves(NewBoard)) ->
-			(
-				Winner = TempWinner,
-				write('------- GAME OVER -------'), nl, nl,
-				display_board(NewBoard),
-				nl, write('------- GAME OVER -------')
-			);
-			(switch_player(Player, NewPlayer), play(NewBoard, GameMode, Difficulty, Winner, NewPlayer))
+	((TempWinner \= 'none'; check_no_moves(NewBoard)) ->
+		(
+			Winner = TempWinner,
+			write('------- GAME OVER -------'), nl, nl,
+			display_board(NewBoard),
+			nl, write('------- GAME OVER -------')
+		);
+		(switch_player(Player, NewPlayer), play(NewBoard, GameMode, Difficulty, Winner, NewPlayer))
 	).
 
+% Choose the mode of turn
 process_turn(cc, Difficulty, Board, BoardSize, Cardinal, Position, Player):-
 	get_move(Difficulty, Board, BoardSize, Cardinal, Position, Player).
-% Assume-se que o Player2 num jogo Human vs CPU é sempre o CPU
 process_turn(hc, Difficulty, Board, BoardSize, Cardinal, Position, Player):-
 	(Player == 'p1' ->
 		get_move(Board, BoardSize, Cardinal, Position, Player);
@@ -72,6 +74,7 @@ get_move(Board, BoardSize, Cardinal, Position, Player):-
 			fail
 		).
 
+% Checks if the input was valid
 valid_input(BoardSize, AllMoves, AllCardinals, Cardinal, Position):-
 	member(Cardinal, AllCardinals), 
 	integer(Position), 
@@ -89,9 +92,10 @@ get_move(easy, Board, BoardSize, Cardinal, Position, Player):-
 	member(Cardinal-Position, AllMoves).
 
 /* CPU Hard Turn */
-get_move(hard, Board, BoardSize, Cardinal, Position, Player):-
+get_move(hard, Board, _, Cardinal, Position, Player):-
 	highest_value_move(Player, Board, Cardinal, Position).
-	
+
+% Writes all the valid moves of the player
 show_all_moves(ValidMoves):-
 	write('Valid Moves:'), nl,
 	show_all_move(ValidMoves),

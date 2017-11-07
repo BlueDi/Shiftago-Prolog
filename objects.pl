@@ -1,4 +1,4 @@
-/* Board */
+/* Main Board */
 board([
 	[e, e, e, e, e, e, e],
 	[e, e, e, e, e, e, e],
@@ -9,14 +9,16 @@ board([
 	[e, e, e, e, e, e, e]
 ]).
 
+/* Mini Board for tests */
 miniboard([
 	[e, e, e],
 	[e, e, e],
 	[e, e, e]
 ]).
 
+/* Valid Moves */
 cardinal_moves([top, left, right, bottom]).
-	
+
 /* Symbols */
 translate(e, 'O').
 translate(x, 'X').

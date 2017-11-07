@@ -1,11 +1,13 @@
 :- use_module(library(lists)).
 
+/* Winner */
 winner([Line|OtherLines], Winner):-
 	(winner_lines([Line|OtherLines], Winner), Winner \= e);
 	(winner_column([Line|OtherLines], Winner), Winner \= e);
 	(winner_diagonal([Line|OtherLines], Winner), Winner \= e);
 	Winner = 'none'.
 
+% Winner by line
 winner_lines([], _).
 winner_lines([Line|OtherLines], Winner):-
 	winner_line(Line, Winner);
@@ -23,6 +25,7 @@ count_elem(X, [X|Lista], N):-
 	count_elem(X, Lista, N1),
 	N is N1 + 1.
 
+% Winner by column
 winner_column([Line|OtherLines], Winner):-
 	nth1(N, Line, Winner),
 	Winner \= e,
@@ -32,6 +35,7 @@ winner_column(N, [Line|OtherLines], Winner):-
 	nth1(N, Line, Winner),
 	winner_column(N, OtherLines, Winner).
 
+% Winner by diagonal
 winner_diagonal([Line|OtherLines], Winner):-
 	nth1(N, Line, Winner),
 	Winner \= e,
@@ -39,12 +43,14 @@ winner_diagonal([Line|OtherLines], Winner):-
 	Nminus is N - 1,
 	(winner_diagonal_plus(Nplus, OtherLines, Winner); winner_diagonal_minus(Nminus, OtherLines, Winner)).
 
+% Winner by diagonal from left to right
 winner_diagonal_plus(_, [], _).
 winner_diagonal_plus(N, [Line|OtherLines], Winner):-
 	nth1(N, Line, Winner),
 	Nplus is N + 1,
 	winner_diagonal_plus(Nplus, OtherLines, Winner).
 
+% Winner by diagonal from right to left
 winner_diagonal_minus(_, [], _).
 winner_diagonal_minus(N, [Line|OtherLines], Winner):-
 	nth1(N, Line, Winner),
