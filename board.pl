@@ -168,14 +168,20 @@ value(Player, Board, Value):-
 value(Player, Board, Value):-
 	count_pairs_inlines(Player, Board, Value2),
 	count_pairs_incolumns(Player, Board, Value3),
-	Value is Value2 + Value3.
+	count_around_player(Board, Player, Value4),
+	switch_player(Player, NextPlayer),
+	count_pairs_inlines(NextPlayer, Board, EnemyValue2),
+	count_pairs_incolumns(NextPlayer, Board, EnemyValue3),
+	count_around_player(Board, NextPlayer, EnemyValue4),
+	PlayerValue is (3 * Value2) + (3 * Value3) + Value4,
+	EnemyValue is (3 * EnemyValue2) + (3 * EnemyValue3) + EnemyValue4,
+	Value is PlayerValue - EnemyValue.
 
 highest_value_move(Player, Board, Cardinal, Position):-
 	get_moves(Board, Player, AllMoves),
 	list_value_move(Board, Player, AllMoves, ValueMove),
 	sort(ValueMove, SortedValueMove),
-	last(SortedValueMove, Value-Cardinal-Position),
-	write('Valor do tabuleiro '), write(Value), nl.
+	last(SortedValueMove, Value-Cardinal-Position).
 	
 list_value_move(_, _, [], []).
 list_value_move(Board, Player, [Cardinal-Position|AllMoves], [Value-Cardinal-Position|ValueMove]):-
@@ -233,3 +239,46 @@ count_pairs_incolumn(Player, [Player|Tail1], [Player|Tail2], Value):-
 count_pairs_incolumn(Player, [Head1|Tail1], [Head2|Tail2], Value):-
 	(Player \= Head1; Player \= Head2),
 	count_pairs_incolumn(Player, Tail1, Tail2, Value).
+	
+count_around_player(Board, Player, Value):-
+	get_player_pieces(Board, Player, Pieces),
+	count_arounds(Pieces, Value).
+
+count_arounds([], 0).
+count_arounds([Y-X|Pieces], Value):-
+	count_around([Y-X|Pieces], Y-X, ValueP),
+	count_arounds(Pieces, ValueO),
+	Value is ValueP + ValueO.
+	
+count_around([], _, 0).
+count_around([Y2-X2|Pieces], Y1-X1, Value):-
+	X1 > X2 - 1,
+	Y1 > Y2 - 1,
+	X1 < X2 + 1,
+	Y1 < Y2 + 1,
+	count_around(Pieces, Y1-X1, Value2),
+	Value is Value2 + 1.
+count_around([Y2-X2|Pieces], Y1-X1, Value):-
+	(X1 =< X2 - 1;
+	Y1 =< Y2 - 1;
+	X1 >= X2 + 1;
+	Y1 >= Y2 + 1),
+	count_around(Pieces, Y1-X1, Value).
+
+get_player_pieces(Board, Player, Pieces):-
+	get_player_pieces(Board, Player, 1, Pieces).
+get_player_pieces([], _, _, []).
+get_player_pieces([Linha|Tail], Player, Y, PlayerPieces):-
+	get_player_pieces_line(Linha, Player, 1, Y, LinePieces),
+	Y1 is Y + 1,
+	get_player_pieces(Tail, Player, Y1, Pieces),
+	append(LinePieces, Pieces, PlayerPieces).
+
+get_player_pieces_line([], _, _, _, []).
+get_player_pieces_line([Player|Tail], Player, X, Y, [Y-X|Pieces]):-
+	X1 is X + 1,
+	get_player_pieces_line(Tail, Player, X1, Y, Pieces).
+get_player_pieces_line([NotPlayer|Tail], Player, X, Y, Pieces):-
+	NotPlayer \= Player,
+	X1 is X + 1,
+	get_player_pieces_line(Tail, Player, X1, Y, Pieces).
