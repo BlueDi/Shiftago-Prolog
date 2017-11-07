@@ -7,6 +7,15 @@
 
 % Initializes parameters of the game and starts it
 shiftago(Winner):-
+	nl,
+	write(' _____ _     _  __ _ '), nl,
+	write('/  ___| |   (_)/ _| |'), nl,
+	write('\\ `--.| |__  _| |_| |_ __ _  __ _  ___  '), nl,
+	format(" `--. \\ '_ \\| |  _| __/ _` |/ _` |/ _ \\ ", []), nl,
+	write('/\\__/ / | | | | | | || (_| | (_| | (_) |'), nl,
+	write('\\____/|_| |_|_|_|  \\__\\__,_|\\__, |\\___/ '), nl,
+	write('                             __/ |      '), nl,
+	write('                            |___/      '), nl, nl,
 	write('Please pick a board to play [normal, mini]'), nl,
 	read(BoardName),
 	((BoardName = 'normal', board(Board)); (BoardName = 'mini', miniboard(Board))),
