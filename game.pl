@@ -1,5 +1,20 @@
 :- use_module(library(lists)).
 
+/* Switch Player */
+switch_player(Player, NewPlayer, NPlayers):-
+	NewPlayer = 'p4',
+	Player == 'p3',
+	NPlayers > 3.
+switch_player(Player, NewPlayer, NPlayers):-
+	NewPlayer = 'p3',
+	Player == 'p2',
+	NPlayers > 2.
+switch_player(Player, NewPlayer, _):-
+	NewPlayer = 'p2',
+	Player == 'p1'.
+switch_player(_, NewPlayer, _):-
+	NewPlayer = 'p1'.
+
 /* Winner */
 winner([Line|OtherLines], Winner):-
 	(winner_lines([Line|OtherLines], Winner), Winner \= e);

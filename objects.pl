@@ -24,8 +24,5 @@ translate(e, 'O').
 translate(x, 'X').
 translate(p1, '1').
 translate(p2, '2').
-
-/* Switch Player */
-switch_player(Player, NewPlayer):-
-	(NewPlayer = 'p2', Player \= 'p2');
-	NewPlayer = 'p1'.
+translate(p3, '3').
+translate(p4, '4').

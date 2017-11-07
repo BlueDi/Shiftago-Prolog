@@ -2,27 +2,27 @@
 	Returns the highest value move 
 		get_moves needs AllMoves to be a list of Cardinal-Position
 */
-highest_value_move(Player, Board, Cardinal, Position):-
+highest_value_move(NPlayers, Player, Board, Cardinal, Position):-
 	get_moves(Board, Player, AllMoves),
-	list_value_move(Board, Player, AllMoves, ValueMove),
+	list_value_move(Board, NPlayers, Player, AllMoves, ValueMove),
 	sort(ValueMove, SortedValueMove),
 	last(SortedValueMove, _-Cardinal-Position).
 
 /* Value of the Board */
-value(Player, Board, Value):-
+value(_, Player, Board, Value):-
 	winner(Board, Winner),
 	Winner == Player,
 	Value is 100.
-value(Player, Board, Value):-
-	switch_player(Player, NextPlayer),
+value(NPlayers, Player, Board, Value):-
+	switch_player(Player, NextPlayer, NPlayers),
 	winner(Board, Winner),
 	Winner == NextPlayer,
 	Value is 100.
-value(Player, Board, Value):-
+value(NPlayers, Player, Board, Value):-
 	count_pairs_inlines(Player, Board, Value2),
 	count_pairs_incolumns(Player, Board, Value3),
 	count_around_player(Board, Player, Value4),
-	switch_player(Player, NextPlayer),
+	switch_player(Player, NextPlayer, NPlayers),
 	count_pairs_inlines(NextPlayer, Board, EnemyValue2),
 	count_pairs_incolumns(NextPlayer, Board, EnemyValue3),
 	count_around_player(Board, NextPlayer, EnemyValue4),
@@ -34,11 +34,11 @@ value(Player, Board, Value):-
 	Creates a list with all the valid moves and their value
 		Format of the list: Value-Cardinal-Position
 */
-list_value_move(_, _, [], []).
-list_value_move(Board, Player, [Cardinal-Position|AllMoves], [Value-Cardinal-Position|ValueMove]):-
+list_value_move(_, _, _, [], []).
+list_value_move(Board, NPlayers, Player, [Cardinal-Position|AllMoves], [Value-Cardinal-Position|ValueMove]):-
 	place_piece(Board, Player, Cardinal, Position, NewBoard),
-	value(Player, NewBoard, Value),
-	list_value_move(Board, Player, AllMoves, ValueMove).
+	value(NPlayers, Player, NewBoard, Value),
+	list_value_move(Board, NPlayers, Player, AllMoves, ValueMove).
 
 /* Counters */
 % Counts the number of pairs by lines
