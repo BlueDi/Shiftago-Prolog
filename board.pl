@@ -157,6 +157,15 @@ valid_move(Board, Player, Cardinal, Value, AllMoves):-
 	
 /* Board Value */
 value(Player, Board, Value):-
+	winner(Board, Winner),
+	Winner == Player,
+	Value is 100.
+value(Player, Board, Value):-
+	switch_player(Player, NextPlayer),
+	winner(Board, Winner),
+	Winner == NextPlayer,
+	Value is 100.
+value(Player, Board, Value):-
 	count_pairs_inlines(Player, Board, Value2),
 	count_pairs_incolumns(Player, Board, Value3),
 	Value is Value2 + Value3.
