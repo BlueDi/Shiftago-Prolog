@@ -12,23 +12,30 @@ highest_value_move(NPlayers, Player, Board, Cardinal, Position):-
 value(_, Player, Board, Value):-
 	winner(Board, Winner),
 	Winner == Player,
-	Value is 100.
+	Value is 1000.
 value(NPlayers, Player, Board, Value):-
 	switch_player(Player, NextPlayer, NPlayers),
 	winner(Board, Winner),
 	Winner == NextPlayer,
-	Value is 100.
+	Value is 1000.
 value(NPlayers, Player, Board, Value):-
+	value_player(Player, Board, PlayerValue),
+	value_enemy(NPlayers, Player, Board, EnemyValue, NPlayers),
+	Value is (NPlayers * PlayerValue) - EnemyValue.
+	
+value_player(Player, Board, Value):-
 	count_pairs_inlines(Player, Board, Value2),
 	count_pairs_incolumns(Player, Board, Value3),
 	count_around_player(Board, Player, Value4),
+	Value is (4 * Value2) + (4 * Value3) + Value4.
+	
+value_enemy(_, _, _, 0, 1).
+value_enemy(NPlayers, Player, Board, EnemyValue, PlayerCounter):-
 	switch_player(Player, NextPlayer, NPlayers),
-	count_pairs_inlines(NextPlayer, Board, EnemyValue2),
-	count_pairs_incolumns(NextPlayer, Board, EnemyValue3),
-	count_around_player(Board, NextPlayer, EnemyValue4),
-	PlayerValue is (3 * Value2) + (3 * Value3) + Value4,
-	EnemyValue is (3 * EnemyValue2) + (3 * EnemyValue3) + EnemyValue4,
-	Value is PlayerValue - EnemyValue.
+	value_player(NextPlayer, Board, EnemyValue1),
+	PlayerCounterMinus is PlayerCounter - 1,
+	value_enemy(NPlayers, NextPlayer, Board, EnemyValue2, PlayerCounterMinus),
+	EnemyValue is EnemyValue1 + EnemyValue2.
 
 /** 
 	Creates a list with all the valid moves and their value
