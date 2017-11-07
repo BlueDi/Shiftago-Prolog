@@ -16,6 +16,24 @@ miniboard([
 	[e, e, e]
 ]).
 
+/* Big Board */
+bigboard([
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e],
+	[e, e, e, e, e, e, e, e, e, e, e, e, e, e]
+]).
+
 /* Valid Moves */
 cardinal_moves([top, left, right, bottom]).
 

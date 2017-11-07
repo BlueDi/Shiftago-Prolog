@@ -16,9 +16,9 @@ shiftago(Winner):-
 	write('\\____/|_| |_|_|_|  \\__\\__,_|\\__, |\\___/ '), nl,
 	write('                             __/ |      '), nl,
 	write('                            |___/      '), nl, nl,
-	write('Please pick a board to play [normal, mini]'), nl,
+	write('Please pick a board to play [normal, big, mini]'), nl,
 	read(BoardName),
-	((BoardName = 'normal', board(Board)); (BoardName = 'mini', miniboard(Board))),
+	((BoardName = 'normal', board(Board)); (BoardName = 'big', bigboard(Board)); (BoardName = 'mini', miniboard(Board))),
 	
 	write('Please pick a game mode: CPU vs CPU, Human vs CPU, Human vs Human [cc, hc, hh]'), nl,
 	read(GameMode),
