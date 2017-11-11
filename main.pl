@@ -32,6 +32,7 @@ shiftago(Winner):-
 	write('Please pick difficulty level: Hard or Easy [hard, easy]'), nl,
 	read(Difficulty),
 	(Difficulty = 'hard'; Difficulty = 'easy')),
+	nl,
 	
 	play(Board, GameMode, NPlayers, Difficulty, Winner, p1).
 
@@ -42,7 +43,7 @@ play(Board, GameMode, NPlayers, Difficulty, Winner, Player):-
 	nl, write('Player '), write(Player), format("'s turn", []), nl,
 	length(Board, BoardSize),
 	
-	process_turn(GameMode, NPlayers, Difficulty, Board, BoardSize, Cardinal, Position, Player),
+	process_turn(GameMode, NPlayers, Difficulty, Player, Board, BoardSize, Cardinal, Position),
 	
 	write(Player), write(' placing at '), write(Cardinal), write(', '), write(Position), nl,
 	place_piece(Board, Player, Cardinal, Position, NewBoard),
@@ -61,18 +62,18 @@ play(Board, GameMode, NPlayers, Difficulty, Winner, Player):-
 	).
 
 % Choose the mode of turn
-process_turn(cc, NPlayers, Difficulty, Board, BoardSize, Cardinal, Position, Player):-
-	get_move(NPlayers, Difficulty, Board, BoardSize, Cardinal, Position, Player).
-process_turn(hc, NPlayers, Difficulty, Board, BoardSize, Cardinal, Position, Player):-
+process_turn(cc, NPlayers, Difficulty, Player, Board, BoardSize, Cardinal, Position):-
+	get_move(NPlayers, Difficulty, Player, Board, BoardSize, Cardinal, Position).
+process_turn(hc, NPlayers, Difficulty, Player, Board, BoardSize, Cardinal, Position):-
 	(Player == 'p1' ->
-		get_move(Board, BoardSize, Cardinal, Position, Player);
-		get_move(NPlayers, Difficulty, Board, BoardSize, Cardinal, Position, Player)
+		get_move(Player, Board, BoardSize, Cardinal, Position);
+		get_move(NPlayers, Difficulty, Player, Board, BoardSize, Cardinal, Position)
 	).
-process_turn(hh, _, _, Board, BoardSize, Cardinal, Position, Player):-
-	get_move(Board, BoardSize, Cardinal, Position, Player).
+process_turn(hh, _, _, Player, Board, BoardSize, Cardinal, Position):-
+	get_move(Player, Board, BoardSize, Cardinal, Position).
 	
 /* Human Turn */
-get_move(Board, BoardSize, Cardinal, Position, Player):-
+get_move(Player, Board, BoardSize, Cardinal, Position):-
 	cardinal_moves(AllCardinals),
 	get_moves(Board, Player, AllMoves),
 	show_all_moves(AllMoves),
@@ -88,7 +89,7 @@ get_move(Board, BoardSize, Cardinal, Position, Player):-
 		).
 			
 /* CPU Easy Turn */
-get_move(_, easy, Board, BoardSize, Cardinal, Position, Player):-
+get_move(_, easy, Player, Board, BoardSize, Cardinal, Position):-
 	cardinal_moves(AllCardinals),
 	random_member(Cardinal, AllCardinals),
 	BoardSize1 is BoardSize + 1,
@@ -97,7 +98,7 @@ get_move(_, easy, Board, BoardSize, Cardinal, Position, Player):-
 	member(Cardinal-Position, AllMoves).
 
 /* CPU Hard Turn */
-get_move(NPlayers, hard, Board, _, Cardinal, Position, Player):-
+get_move(NPlayers, hard, Player, Board, _, Cardinal, Position):-
 	highest_value_move(NPlayers, Player, Board, Cardinal, Position).
 	
 % Checks if the input was valid

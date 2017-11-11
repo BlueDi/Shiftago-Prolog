@@ -130,15 +130,15 @@ get_moves(Board, Player, AllMoves):-
 /* Checks */
 % Check if a move is valid
 valid_move(_, _, _, 0, _).
-valid_move(Board, Player, Cardinal, Value, [Cardinal-Value|Other_Moves]):-
-	place_piece(Board, Player, Cardinal, Value, NewBoard),
+valid_move(Board, Player, Cardinal, Position, [Cardinal-Position|Other_Moves]):-
+	place_piece(Board, Player, Cardinal, Position, NewBoard),
 	Board \= NewBoard,
-	Value2 is Value - 1,
-	valid_move(Board, Player, Cardinal, Value2, Other_Moves).
-valid_move(Board, Player, Cardinal, Value, AllMoves):-
-	place_piece(Board, Player, Cardinal, Value, Board),
-	Value2 is Value - 1,
-	valid_move(Board, Player, Cardinal, Value2, AllMoves).
+	Position2 is Position - 1,
+	valid_move(Board, Player, Cardinal, Position2, Other_Moves).
+valid_move(Board, Player, Cardinal, Position, AllMoves):-
+	place_piece(Board, Player, Cardinal, Position, Board),
+	Position2 is Position - 1,
+	valid_move(Board, Player, Cardinal, Position2, AllMoves).
 	
 % Check if the board didn't chang the number of lines
 check_board(Board, NewBoard):-

@@ -26,7 +26,7 @@ value(NPlayers, Player, Board, Value):-
 value_player(Player, Board, Value):-
 	count_pairs_inlines(Player, Board, Value2),
 	count_pairs_incolumns(Player, Board, Value3),
-	count_around_player(Board, Player, Value4),
+	count_around_player(Player, Board, Value4),
 	Value is (4 * Value2) + (4 * Value3) + Value4.
 	
 value_enemy(_, _, _, 0, 1).
@@ -92,8 +92,8 @@ count_pairs_incolumn(Player, [Head1|Tail1], [Head2|Tail2], Value):-
 	count_pairs_incolumn(Player, Tail1, Tail2, Value).
 	
 % Counts the number of player pieces around every piece of a player
-count_around_player(Board, Player, Value):-
-	get_player_pieces(Board, Player, Pieces),
+count_around_player(Player, Board, Value):-
+	get_player_pieces(Player, Board, Pieces),
 	count_arounds(Pieces, Value).
 
 count_arounds([], 0).
@@ -121,21 +121,21 @@ count_around([Y2-X2|Pieces], Y1-X1, Value):-
 	Get all of the player pieces 
 		Format: List of Y-X
 */
-get_player_pieces(Board, Player, Pieces):-
-	get_player_pieces(Board, Player, 1, Pieces).
-get_player_pieces([], _, _, []).
-get_player_pieces([Line|Tail], Player, Y, PlayerPieces):-
-	get_player_pieces_line(Line, Player, 1, Y, LinePieces),
+get_player_pieces(Player, Board, Pieces):-
+	get_player_pieces(Player, Board, 1, Pieces).
+get_player_pieces(_, [], _, []).
+get_player_pieces(Player, [Line|Tail], Y, PlayerPieces):-
+	get_player_pieces_line(Player, Line, 1, Y, LinePieces),
 	Y1 is Y + 1,
-	get_player_pieces(Tail, Player, Y1, Pieces),
+	get_player_pieces(Player, Tail, Y1, Pieces),
 	append(LinePieces, Pieces, PlayerPieces).
 
 % Get the players pieces of a line
-get_player_pieces_line([], _, _, _, []).
-get_player_pieces_line([Player|Tail], Player, X, Y, [Y-X|Pieces]):-
+get_player_pieces_line(_, [], _, _, []).
+get_player_pieces_line(Player, [Player|Tail], X, Y, [Y-X|Pieces]):-
 	X1 is X + 1,
-	get_player_pieces_line(Tail, Player, X1, Y, Pieces).
-get_player_pieces_line([NotPlayer|Tail], Player, X, Y, Pieces):-
+	get_player_pieces_line(Player, Tail, X1, Y, Pieces).
+get_player_pieces_line(Player, [NotPlayer|Tail], X, Y, Pieces):-
 	NotPlayer \= Player,
 	X1 is X + 1,
-	get_player_pieces_line(Tail, Player, X1, Y, Pieces).
+	get_player_pieces_line(Player, Tail, X1, Y, Pieces).
