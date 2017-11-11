@@ -17,11 +17,11 @@ value(NPlayers, Player, Board, Value):-
 	switch_player(Player, NextPlayer, NPlayers),
 	winner(Board, Winner),
 	Winner == NextPlayer,
-	Value is 1000.
+	Value is -1000.
 value(NPlayers, Player, Board, Value):-
 	value_player(Player, Board, PlayerValue),
 	value_enemy(NPlayers, Player, Board, EnemyValue, NPlayers),
-	Value is (NPlayers * PlayerValue) - EnemyValue.
+	Value is ((NPlayers - 1) * PlayerValue) - EnemyValue.
 	
 value_player(Player, Board, Value):-
 	count_pairs_inlines(Player, Board, Value2),
