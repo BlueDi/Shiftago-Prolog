@@ -82,11 +82,8 @@ get_move(Player, Board, BoardSize, Cardinal, Position):-
 		read(Cardinal), 
 		write('Please pick a position [1, '), write(BoardSize), write(']'), nl,
 		read(Position),
-		(	valid_input(BoardSize, AllMoves, AllCardinals, Cardinal, Position)
-		->	!
-		;	nl, write('Input ['), write(Cardinal-Position), write('] is not valid.'), nl,
-			fail
-		).
+		valid_input(BoardSize, AllMoves, AllCardinals, Cardinal, Position);
+		(nl, write('Input ['), write(Cardinal-Position), write('] is not valid.'), nl, fail).
 			
 /* CPU Easy Turn */
 get_move(_, easy, Player, Board, BoardSize, Cardinal, Position):-
